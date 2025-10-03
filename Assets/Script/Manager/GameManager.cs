@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    [Header("UI Menu")]
     public MenuScreenTypes m_startScreen = MenuScreenTypes.SPLASH_SCREEN;
 
     public UIMenuBase m_splashScreen;
@@ -13,6 +15,8 @@ public class GameManager : MonoBehaviour
 
     public UIMenuBase m_currentMenu { get; private set; }
 
+    [Header("Audio")]
+    public AudioManager m_audioManager;
 
     public int m_rows { get; set; }
     public int m_columns { get; set; }
@@ -28,6 +32,7 @@ public class GameManager : MonoBehaviour
     {
         m_currentMenu = null;
 
+        m_audioManager.Initialize();
 
         InitializeGridSettings();
         InitializeAudioSettings();

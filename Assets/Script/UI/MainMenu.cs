@@ -19,6 +19,8 @@ public class MainMenu : UIMenuBase
         m_manger = GameManager.Instance;
         RefreshGridNumbers();
         RefreshAudioSettings();
+
+        m_manger.m_audioManager.PlayBGM();
     }
 
 
