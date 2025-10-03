@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CardGridManager : MonoBehaviour
 {
+    public CardsIconDataSo m_cardIconData;
     public RectTransform m_container;
     public Card m_cardPrefab;
     
@@ -18,6 +19,7 @@ public class CardGridManager : MonoBehaviour
     private int m_rows;
     private int m_columns;
 
+
     public void Initialize()
     {
         if (m_cardPool == null)
@@ -27,7 +29,8 @@ public class CardGridManager : MonoBehaviour
 
         m_rows = GameManager.Instance.m_rows;
         m_columns = GameManager.Instance.m_columns;
-        PopulateCards();
+        CreateCardsWithPairs();
+        DisplayCards();
     }
 
     public void OnExit()
@@ -38,10 +41,46 @@ public class CardGridManager : MonoBehaviour
         }
     }
 
-    private void PopulateCards()
+    private void CreateCardsWithPairs()
+    {
+        m_cards = new Card[m_rows * m_columns];
+
+        bool isOdd = m_cards.Length % 2 != 0;
+        int cardLen = m_cards.Length;
+        if (isOdd)
+        {
+            cardLen = cardLen - 1;
+
+            m_cards[cardLen] = GetNewCard();
+            m_cards[cardLen].Initialize(false);
+        }
+
+        for (int i = 0, j = 0; i < cardLen; i += 2, j++)
+        {
+            int id = j % m_cardIconData.m_icons.Count;
+            Sprite sprite = m_cardIconData.m_icons[id];
+
+            m_cards[i] = GetNewCard();
+            m_cards[i].Initialize(id, sprite);
+
+            m_cards[i + 1] = GetNewCard();
+            m_cards[i + 1].Initialize(id, sprite);
+        }
+
+        //Shuffling
+        for (int i = m_cards.Length - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            // Swap
+            Card temp = m_cards[i];
+            m_cards[i] = m_cards[j];
+            m_cards[j] = temp;
+        }
+    }
+
+    private void DisplayCards()
     {
         Vector3[] containerCorners = new Vector3[4];
-        m_cards = new Card[m_rows * m_columns];
 
         m_container.GetLocalCorners(containerCorners);
 
@@ -51,9 +90,9 @@ public class CardGridManager : MonoBehaviour
         float cardWidth = containerWidth / m_columns;
         float cardHeight = containerHeight / m_rows;
 
+
         for (int i = 0; i < m_cards.Length; i++)
         {
-            m_cards[i] = GetNewCard();
             RectTransform cardRect = m_cards[i].m_rectTransform;
             int row = i / m_columns;
             int col = i % m_columns;
@@ -72,6 +111,11 @@ public class CardGridManager : MonoBehaviour
         //Make any initialisation here if needed
         return card;
     }
+
+
+   
+
+
 
     void ReturnObject(Card card)
     {
