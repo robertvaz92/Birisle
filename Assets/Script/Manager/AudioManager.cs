@@ -25,13 +25,10 @@ public class AudioManager : MonoBehaviour
         {
             return;
         }
-
-        if (m_bgmSource.clip == m_data.m_bgMusic)
-        {
-            return;
-        }
+        
         m_bgmSource.clip = m_data.m_bgMusic;
         m_bgmSource.volume = volume;
+        m_bgmSource.loop = true;
         m_bgmSource.Play();
     }
 
@@ -47,7 +44,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip, float volume = 1f)
     {
-        if (!m_isInitialized)
+        if (!m_isInitialized || !GameManager.Instance.m_isSfxEnabled)
         {
             return;
         }

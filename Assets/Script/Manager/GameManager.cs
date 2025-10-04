@@ -65,6 +65,15 @@ public class GameManager : MonoBehaviour
     {
         m_isMusicEnabled = isOn;
         PlayerPrefs.SetInt(Constants.PlayerPrefMusic, m_isMusicEnabled ? 1 : 0);
+
+        if (m_isMusicEnabled)
+        {
+            m_audioManager.PlayBGM();
+        }
+        else
+        {
+            m_audioManager.StopBGM();
+        }
     }
 
     public void UpdateSfxOnOff(bool isOn)
