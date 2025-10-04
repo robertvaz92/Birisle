@@ -13,31 +13,37 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     public int m_id { get; private set; }
     public Sprite m_iconSprite { get; private set; }
+    public Sprite m_bgSprite { get; private set; }
 
-    private bool m_interactable;
-    public void Initialize(int id, Sprite icon)
+    public CardUpdater m_updater { get; private set; }
+
+    public void Initialize(int id, Sprite icon, Sprite bgSprite, bool isValidCard)
     {
+        m_updater = new CardUpdater(this);
         m_id = id;
         m_iconSprite = icon;
-        m_canvasGroup.alpha = 1;
-        m_interactable = true;
+        m_bgSprite = bgSprite;
+        if (isValidCard)
+        {
+            m_canvasGroup.alpha = 1;
+            m_icon.sprite = m_bgSprite;
 
-        m_icon.sprite = m_iconSprite;
+            m_updater.SwitchState(STATE_TYPE.CLOSE);
+        }
+        else
+        {
+            m_updater.SwitchState(STATE_TYPE.STALE);
+        }
     }
 
-    public void Initialize(bool nonInteractable)
+    public void CustomUpdate()
     {
-        m_canvasGroup.alpha = 0;
-        m_interactable = false;
+        m_updater.CustomUpdate();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (m_interactable)
-        {
-            m_highlight.SetActive(!m_highlight.activeInHierarchy);
-        }
+        m_updater.OnCardClick();
+        //m_highlight.SetActive(!m_highlight.activeInHierarchy);
     }
-
-
 }

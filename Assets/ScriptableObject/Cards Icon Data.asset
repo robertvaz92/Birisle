@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad81704ccf1a5ba42bb363f76192120e, type: 3}
   m_Name: Cards Icon Data
   m_EditorClassIdentifier: 
+  m_bgIcon: {fileID: 21300000, guid: afa33b307184be44baa96d77e2a7d0fc, type: 3}
   m_icons:
   - {fileID: 21300000, guid: 0ad3ca2baaacee14999ec5b5d21906fa, type: 3}
   - {fileID: 21300000, guid: fce97e8ad0004f248b24549edc83176c, type: 3}

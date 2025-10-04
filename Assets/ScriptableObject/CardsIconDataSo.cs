@@ -6,5 +6,6 @@ using UnityEngine;
 
 public class CardsIconDataSo : ScriptableObject
 {
+    public Sprite m_bgIcon;
     public List<Sprite> m_icons;
 }

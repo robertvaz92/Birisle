@@ -18,6 +18,7 @@ public class CardGridManager : MonoBehaviour
     private ObjectPool<Card> m_cardPool;
     private int m_rows;
     private int m_columns;
+    private bool m_isInitialized = false;
 
 
     public void Initialize()
@@ -31,6 +32,8 @@ public class CardGridManager : MonoBehaviour
         m_columns = GameManager.Instance.m_columns;
         CreateCardsWithPairs();
         DisplayCards();
+
+        m_isInitialized = true;
     }
 
     public void OnExit()
@@ -39,6 +42,7 @@ public class CardGridManager : MonoBehaviour
         {
             ReturnObject(m_cards[i]);
         }
+        m_isInitialized = false;
     }
 
     private void CreateCardsWithPairs()
@@ -52,7 +56,7 @@ public class CardGridManager : MonoBehaviour
             cardLen = cardLen - 1;
 
             m_cards[cardLen] = GetNewCard();
-            m_cards[cardLen].Initialize(false);
+            m_cards[cardLen].Initialize(-1, null, null, false);
         }
 
         for (int i = 0, j = 0; i < cardLen; i += 2, j++)
@@ -61,10 +65,10 @@ public class CardGridManager : MonoBehaviour
             Sprite sprite = m_cardIconData.m_icons[id];
 
             m_cards[i] = GetNewCard();
-            m_cards[i].Initialize(id, sprite);
+            m_cards[i].Initialize(id, sprite, m_cardIconData.m_bgIcon, true);
 
             m_cards[i + 1] = GetNewCard();
-            m_cards[i + 1].Initialize(id, sprite);
+            m_cards[i + 1].Initialize(id, sprite, m_cardIconData.m_bgIcon,true);
         }
 
         //Shuffling
@@ -112,13 +116,19 @@ public class CardGridManager : MonoBehaviour
         return card;
     }
 
-
-   
-
-
-
     void ReturnObject(Card card)
     {
         m_cardPool.ReturnToPool(card);
+    }
+
+    private void Update()
+    {
+        if (m_isInitialized)
+        {
+            for (int i = 0; i < m_cards.Length; i++)
+            {
+                m_cards[i].CustomUpdate();
+            }
+        }
     }
 }
