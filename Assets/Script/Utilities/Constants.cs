@@ -18,6 +18,6 @@ public class Constants : MonoBehaviour
     public static readonly string PlayerPrefMusic = "MUSIC_SETTINGS_PREF";
     public static readonly string PlayerPrefSfx = "SFX_SETTINGS_PREF";
 
-    
+    public static readonly string GameSaveFileName = "CardsSavedData.txt";
 
 }

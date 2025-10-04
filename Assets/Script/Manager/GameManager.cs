@@ -22,6 +22,10 @@ public class GameManager : MonoBehaviour
     public int m_columns { get; set; }
     public bool m_isMusicEnabled { get; private set; }
     public bool m_isSfxEnabled { get; private set; }
+    public SavedData m_loadedGame { get; private set; }
+
+
+    private FileManager m_fileManager;
 
     private void Awake()
     {
@@ -31,6 +35,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         m_currentMenu = null;
+        m_fileManager = new FileManager();
+        LoadGameData();
 
         m_audioManager.Initialize();
 
@@ -125,5 +131,50 @@ public class GameManager : MonoBehaviour
                 break;
         }
         return retVal;
+    }
+
+    ///////////////////////////////////   Data Save/Load  /////////////////////////////////////
+    ///
+    public void SaveGameData(CardGridManager cardManager)
+    {
+        SavedData saveData = new SavedData();
+        saveData.AttemptCount = cardManager.m_totalFlipTries;
+        saveData.Score = cardManager.m_scoreManager.m_baseScore;
+        saveData.Rows = m_rows;
+        saveData.Columns = m_columns;
+
+        float a = (m_rows * m_columns / 2f);
+        saveData.Progress = (int)(((a - cardManager.m_totalMatches) / a) * 100);
+
+        saveData.CardIds = new List<SavedCardInfo>();
+        for (int i = 0; i < cardManager.m_cards.Length; i++)
+        {
+            SavedCardInfo info = new SavedCardInfo();
+            info.Id = cardManager.m_cards[i].m_id;
+            info.IsActive = (cardManager.m_cards[i].m_updater.m_currentStateType == STATE_TYPE.OPEN || cardManager.m_cards[i].m_updater.m_currentStateType == STATE_TYPE.CLOSE);
+            saveData.CardIds.Add(info);
+        }
+
+        m_fileManager.writeFile(Constants.GameSaveFileName, JsonUtility.ToJson(saveData));
+
+        m_loadedGame = saveData;
+    }
+
+    public void LoadGameData()
+    {
+        string stringData = m_fileManager.readFile(Constants.GameSaveFileName);
+        m_loadedGame = JsonUtility.FromJson<SavedData>(stringData);
+        Debug.Log(stringData);
+    }
+
+    public void ClearSavedGame()
+    {
+        m_loadedGame = null;
+        m_fileManager.writeFile(Constants.GameSaveFileName, JsonUtility.ToJson(m_loadedGame));
+    }
+
+    public bool IsSavedGameExist()
+    {
+        return m_loadedGame != null;
     }
 }

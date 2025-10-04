@@ -13,12 +13,15 @@ public class GameMenu : UIMenuBase
     public TextMeshProUGUI m_totalFlipTries;
 
     public GameOverPanel m_gameOverPanel;
+
+    private bool m_isGameOver;
     public override void OnEnter()
     {
         base.OnEnter();
         m_gameOverPanel.gameObject.SetActive(false);
         m_cardManager.Initialize();
         OnScoreUpdate(0, 0);
+        m_isGameOver = false;
 
         m_cardManager.m_scoreManager.OnScoreUpdate -= OnScoreUpdate;
         m_cardManager.m_scoreManager.OnScoreUpdate += OnScoreUpdate;
@@ -50,6 +53,7 @@ public class GameMenu : UIMenuBase
 
     public void OnGameOver()
     {
+        m_isGameOver = true;
         m_cardManager.OnGameOver -= OnGameOver;
         StartCoroutine(DelayedGameOver());
     }
@@ -64,6 +68,21 @@ public class GameMenu : UIMenuBase
 
     public void OnClickClose()
     {
+        TrySaveData();
         GameManager.Instance.SwitchMenu(MenuScreenTypes.MAIN_MENU_SCREEN);
+    }
+
+    private void TrySaveData()
+    {
+        // Save Logic
+        // Will be saving only if there is some progress and Not completed
+        if (!m_isGameOver && m_cardManager.m_totalMatches > 0)
+        {
+            GameManager.Instance.SaveGameData(m_cardManager);
+        }
+        else
+        {
+            GameManager.Instance.ClearSavedGame();
+        }
     }
 }

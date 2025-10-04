@@ -24,6 +24,8 @@ public class CardGridManager : MonoBehaviour
     public int m_totalActiveCards { get; private set; }
     public int m_totalFlipTries { get; private set; }
     public int m_totalTimeTaken { get; private set; }
+    public int m_totalMatches { get; private set; }
+
 
     public CardsScoreManager m_scoreManager { get; private set; }
 
@@ -38,6 +40,7 @@ public class CardGridManager : MonoBehaviour
         m_scoreManager = new CardsScoreManager(this);
         m_totalActiveCards = 0;
         m_totalFlipTries = 0;
+        m_totalMatches = 0;
         if (m_cardPool == null)
         {
             m_cardPool = new ObjectPool<Card>(m_cardPrefab, m_initialCardPoolSize, m_container, "Card");
@@ -142,6 +145,7 @@ public class CardGridManager : MonoBehaviour
     public void OnMachSuccess(Card c1, Card c2)
     {
         m_totalFlipTries++;
+        m_totalMatches++;
         m_totalActiveCards -= 2;
         OnCardMatchSuccess?.Invoke(c1, c2);
 

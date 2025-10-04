@@ -12,16 +12,22 @@ public class MainMenu : UIMenuBase
     public Slider m_musicSlider;
     public Slider m_sfxSlider;
 
+    public GameObject m_resumeGameButton;
+    public GameResumePanel m_gameResumePanel;
+
     private GameManager m_manger;
 
     public override void OnEnter()
     {
         base.OnEnter();
         m_manger = GameManager.Instance;
+        m_gameResumePanel.gameObject.SetActive(false);
         RefreshGridNumbers();
         RefreshAudioSettings();
 
         m_manger.m_audioManager.PlayBGM();
+
+        m_resumeGameButton.SetActive(m_manger.IsSavedGameExist());
     }
 
 
@@ -82,7 +88,8 @@ public class MainMenu : UIMenuBase
 
     public void OnClickResumeGame()
     {
-        //Bring Confirmation Popup
+        m_gameResumePanel.gameObject.SetActive(true);
+        m_gameResumePanel.Initialize(this);
     }
 
     public void OnClickConfirm()
