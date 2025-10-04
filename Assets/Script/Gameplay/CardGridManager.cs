@@ -73,7 +73,7 @@ public class CardGridManager : MonoBehaviour
             cardLen = cardLen - 1;
 
             m_cards[cardLen] = GetNewCard();
-            m_cards[cardLen].Initialize(-1, null, null, false, this);
+            m_cards[cardLen].Initialize(-1, this);
             m_totalActiveCards--;
         }
 
@@ -83,10 +83,10 @@ public class CardGridManager : MonoBehaviour
             Sprite sprite = m_cardIconData.m_icons[id];
 
             m_cards[i] = GetNewCard();
-            m_cards[i].Initialize(id, sprite, m_cardIconData.m_bgIcon, true, this);
+            m_cards[i].Initialize(id, this);
 
             m_cards[i + 1] = GetNewCard();
-            m_cards[i + 1].Initialize(id, sprite, m_cardIconData.m_bgIcon,true, this);
+            m_cards[i + 1].Initialize(id, this);
         }
 
         //Shuffling
