@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainMenu : UIMenuBase
 {
-    public TMPro.TextMeshProUGUI m_rowNumber;
-    public TMPro.TextMeshProUGUI m_columnNumber;
+    public TextMeshProUGUI m_rowNumber;
+    public TextMeshProUGUI m_columnNumber;
 
     public Slider m_musicSlider;
     public Slider m_sfxSlider;

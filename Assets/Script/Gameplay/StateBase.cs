@@ -7,12 +7,28 @@ public enum STATE_TYPE
     NONE,
     STALE,
     OPEN,
-    CLOSE
+    CLOSE,
+    MATCHED
+}
+
+enum FLIP_STATE
+{
+    FLIP_1,
+    FLIP_2,
+    FLIP_FINISH,
+    FINISH_WAIT,
+    CLOSE,
+    MATCHED,
+    WAIT
 }
 
 
 public class StateBase
 {
+    public virtual void Reset()
+    { 
+    }
+
     public virtual void OnEnter()
     {
     }

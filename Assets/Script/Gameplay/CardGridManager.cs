@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 
 public class CardGridManager : MonoBehaviour
 {
-    public CardsIconDataSo m_cardIconData;
+    public CardsDataSo m_cardIconData;
     public RectTransform m_container;
     public Card m_cardPrefab;
     
@@ -19,10 +21,23 @@ public class CardGridManager : MonoBehaviour
     private int m_rows;
     private int m_columns;
     private bool m_isInitialized = false;
+    public int m_totalActiveCards { get; private set; }
+    public int m_totalFlipTries { get; private set; }
+    public int m_totalTimeTaken { get; private set; }
 
+    public CardsScoreManager m_scoreManager { get; private set; }
 
+    public Action<Card> OnCardSelect;
+    public Action<Card, Card> OnCardMatchSuccess;
+    public Action<Card, Card> OnCardMatchFail;
+    public Action OnGameOver;
+
+    private DateTime m_startTime;
     public void Initialize()
     {
+        m_scoreManager = new CardsScoreManager(this);
+        m_totalActiveCards = 0;
+        m_totalFlipTries = 0;
         if (m_cardPool == null)
         {
             m_cardPool = new ObjectPool<Card>(m_cardPrefab, m_initialCardPoolSize, m_container, "Card");
@@ -32,7 +47,7 @@ public class CardGridManager : MonoBehaviour
         m_columns = GameManager.Instance.m_columns;
         CreateCardsWithPairs();
         DisplayCards();
-
+        m_startTime = DateTime.Now;
         m_isInitialized = true;
     }
 
@@ -42,12 +57,14 @@ public class CardGridManager : MonoBehaviour
         {
             ReturnObject(m_cards[i]);
         }
+        m_scoreManager?.CleanUp();
         m_isInitialized = false;
     }
 
     private void CreateCardsWithPairs()
     {
-        m_cards = new Card[m_rows * m_columns];
+        m_totalActiveCards = m_rows * m_columns;
+        m_cards = new Card[m_totalActiveCards];
 
         bool isOdd = m_cards.Length % 2 != 0;
         int cardLen = m_cards.Length;
@@ -56,7 +73,8 @@ public class CardGridManager : MonoBehaviour
             cardLen = cardLen - 1;
 
             m_cards[cardLen] = GetNewCard();
-            m_cards[cardLen].Initialize(-1, null, null, false);
+            m_cards[cardLen].Initialize(-1, null, null, false, this);
+            m_totalActiveCards--;
         }
 
         for (int i = 0, j = 0; i < cardLen; i += 2, j++)
@@ -65,16 +83,16 @@ public class CardGridManager : MonoBehaviour
             Sprite sprite = m_cardIconData.m_icons[id];
 
             m_cards[i] = GetNewCard();
-            m_cards[i].Initialize(id, sprite, m_cardIconData.m_bgIcon, true);
+            m_cards[i].Initialize(id, sprite, m_cardIconData.m_bgIcon, true, this);
 
             m_cards[i + 1] = GetNewCard();
-            m_cards[i + 1].Initialize(id, sprite, m_cardIconData.m_bgIcon,true);
+            m_cards[i + 1].Initialize(id, sprite, m_cardIconData.m_bgIcon,true, this);
         }
 
         //Shuffling
         for (int i = m_cards.Length - 1; i > 0; i--)
         {
-            int j = Random.Range(0, i + 1);
+            int j = UnityEngine.Random.Range(0, i + 1);
             // Swap
             Card temp = m_cards[i];
             m_cards[i] = m_cards[j];
@@ -119,6 +137,31 @@ public class CardGridManager : MonoBehaviour
     void ReturnObject(Card card)
     {
         m_cardPool.ReturnToPool(card);
+    }
+
+    public void OnMachSuccess(Card c1, Card c2)
+    {
+        m_totalFlipTries++;
+        m_totalActiveCards -= 2;
+        OnCardMatchSuccess?.Invoke(c1, c2);
+
+        if (m_totalActiveCards <= 0)
+        {
+            OnAllMatchesFinished();
+        }
+    }
+
+    public void OnMatchFailed(Card c1, Card c2)
+    {
+        m_totalFlipTries++;
+        OnCardMatchFail?.Invoke(c1, c2);
+    }
+
+    public void OnAllMatchesFinished()
+    {
+        DateTime endTime = DateTime.Now;
+        m_totalTimeTaken = (int)(endTime - m_startTime).TotalSeconds;
+        OnGameOver?.Invoke();
     }
 
     private void Update()

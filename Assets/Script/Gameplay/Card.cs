@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class Card : MonoBehaviour, IPointerClickHandler
 {
     public RectTransform m_rectTransform;
+    public RectTransform m_holder;
     public CanvasGroup m_canvasGroup;
     public GameObject m_highlight;
     public Image m_icon;
@@ -15,24 +16,33 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public Sprite m_iconSprite { get; private set; }
     public Sprite m_bgSprite { get; private set; }
 
+    public CardGridManager m_manager { get; private set; }
     public CardUpdater m_updater { get; private set; }
 
-    public void Initialize(int id, Sprite icon, Sprite bgSprite, bool isValidCard)
+    public Card m_compareCard { get; private set; }
+    public bool m_isMatched { get; private set; }
+
+
+    public void Initialize(int id, Sprite icon, Sprite bgSprite, bool isValidCard, CardGridManager manager)
     {
+        m_manager = manager;
         m_updater = new CardUpdater(this);
         m_id = id;
         m_iconSprite = icon;
         m_bgSprite = bgSprite;
+        m_compareCard = null;
+        m_isMatched = false;
+        m_holder.localScale = Vector3.one;
         if (isValidCard)
         {
             m_canvasGroup.alpha = 1;
             m_icon.sprite = m_bgSprite;
 
-            m_updater.SwitchState(STATE_TYPE.CLOSE);
+            m_updater.ForceSwitchState(STATE_TYPE.CLOSE);
         }
         else
         {
-            m_updater.SwitchState(STATE_TYPE.STALE);
+            m_updater.ForceSwitchState(STATE_TYPE.STALE);
         }
     }
 
@@ -45,5 +55,20 @@ public class Card : MonoBehaviour, IPointerClickHandler
     {
         m_updater.OnCardClick();
         //m_highlight.SetActive(!m_highlight.activeInHierarchy);
+    }
+
+    public void SetCompareCard(Card c)
+    {
+        m_compareCard = c;
+    }
+
+    public void SwitchToCloseState()
+    {
+        m_updater.SwitchState(STATE_TYPE.CLOSE);
+    }
+
+    public void SetMatchedFlag()
+    {
+        m_isMatched = true;
     }
 }

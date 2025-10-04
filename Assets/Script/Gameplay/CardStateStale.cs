@@ -10,10 +10,13 @@ public class CardStateStale : StateBase
         m_updater = updater;
     }
 
+    public override void Reset()
+    {
+        m_updater.m_card.m_canvasGroup.alpha = 0;
+    }
+
     public override void OnEnter()
     {
-        base.OnEnter();
-
-        m_updater.m_card.m_canvasGroup.alpha = 0;
+        Reset();
     }
 }
