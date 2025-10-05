@@ -6,14 +6,9 @@ using System;
 
 public class CardGridManager : MonoBehaviour
 {
-    public CardsDataSo m_cardIconData;
+    public CardsDataSo m_cardData;
     public RectTransform m_container;
     public Card m_cardPrefab;
-    
-    public Vector2 m_spacing = new Vector2(50, 50);
-    public Vector2 m_padding = new Vector2(20, 20);
-
-    public int m_initialCardPoolSize = 50;
 
     public Card[] m_cards;
 
@@ -28,6 +23,7 @@ public class CardGridManager : MonoBehaviour
 
 
     public CardsScoreManager m_scoreManager { get; private set; }
+    public GameMenu m_menu { get; private set; }
 
     public Action<Card> OnCardSelect;
     public Action<Card, Card> OnCardMatchSuccess;
@@ -35,15 +31,16 @@ public class CardGridManager : MonoBehaviour
     public Action OnGameOver;
 
     private DateTime m_startTime;
-    public void Initialize()
+    public void Initialize(GameMenu menu)
     {
+        m_menu = menu;
         m_scoreManager = new CardsScoreManager(this);
         m_totalActiveCards = 0;
         m_totalFlipTries = 0;
         m_totalMatches = 0;
         if (m_cardPool == null)
         {
-            m_cardPool = new ObjectPool<Card>(m_cardPrefab, m_initialCardPoolSize, m_container, "Card");
+            m_cardPool = new ObjectPool<Card>(m_cardPrefab, m_cardData.m_initialCardPoolSize, m_container, "Card");
         }
 
         m_rows = GameManager.Instance.m_rows;
@@ -52,7 +49,7 @@ public class CardGridManager : MonoBehaviour
 
         if (GameManager.Instance.m_isLoadingSavedGame)
         {
-            CreateAndLoadCardData();
+            CreateAndLoadSavedData();
             m_scoreManager.SetScoreOnLoadSavedGame();
         }
         else
@@ -85,20 +82,20 @@ public class CardGridManager : MonoBehaviour
             cardLen = cardLen - 1;
 
             m_cards[cardLen] = GetNewCard();
-            m_cards[cardLen].Initialize(-1, this);
+            m_cards[cardLen].Initialize(-1, this, cardLen);
             m_totalActiveCards--;
         }
 
         for (int i = 0, j = 0; i < cardLen; i += 2, j++)
         {
-            int id = j % m_cardIconData.m_icons.Count;
-            Sprite sprite = m_cardIconData.m_icons[id];
+            int id = j % m_cardData.m_icons.Count;
+            Sprite sprite = m_cardData.m_icons[id];
 
             m_cards[i] = GetNewCard();
-            m_cards[i].Initialize(id, this);
+            m_cards[i].Initialize(id, this, i);
 
             m_cards[i + 1] = GetNewCard();
-            m_cards[i + 1].Initialize(id, this);
+            m_cards[i + 1].Initialize(id, this, i);
         }
 
         //Shuffling
@@ -112,7 +109,7 @@ public class CardGridManager : MonoBehaviour
         }
     }
 
-    public void CreateAndLoadCardData()
+    public void CreateAndLoadSavedData()
     {
         m_totalActiveCards = 0;
         m_cards = new Card[m_rows * m_columns];
@@ -136,7 +133,7 @@ public class CardGridManager : MonoBehaviour
                 finishedMatches++;
             }
 
-            m_cards[i].Initialize(id, this);
+            m_cards[i].Initialize(id, this, i);
         }
 
         m_totalMatches = finishedMatches / 2;
@@ -146,11 +143,13 @@ public class CardGridManager : MonoBehaviour
     private void DisplayCards()
     {
         Vector3[] containerCorners = new Vector3[4];
+        Vector3 spacing = Vector3.one * m_cardData.m_spacingMultiplier/ m_cards.Length;
+        Vector3 padding = Vector3.one * m_cardData.m_paddingMultiplier/ m_cards.Length;
 
         m_container.GetLocalCorners(containerCorners);
 
-        float containerWidth = m_container.rect.width - (m_spacing.x * (m_columns - 1)) - (m_padding.x * 2);
-        float containerHeight = m_container.rect.height - (m_spacing.y * (m_rows - 1)) - (m_padding.y * 2);
+        float containerWidth = m_container.rect.width - (spacing.x * (m_columns - 1)) - (padding.x * 2);
+        float containerHeight = m_container.rect.height - (spacing.y * (m_rows - 1)) - (padding.y * 2);
 
         float cardWidth = containerWidth / m_columns;
         float cardHeight = containerHeight / m_rows;
@@ -162,8 +161,8 @@ public class CardGridManager : MonoBehaviour
             int row = i / m_columns;
             int col = i % m_columns;
 
-            float x = m_padding.x + col * (cardWidth + m_spacing.x) + containerCorners[0].x;
-            float y = m_padding.y + row * (cardHeight + m_spacing.y) + containerCorners[0].y;
+            float x = padding.x + col * (cardWidth + spacing.x) + containerCorners[0].x;
+            float y = padding.y + row * (cardHeight + spacing.y) + containerCorners[0].y;
 
             cardRect.sizeDelta = new Vector2(cardWidth, cardHeight);
             cardRect.anchoredPosition = new Vector2(x, y);

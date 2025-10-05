@@ -36,8 +36,8 @@ public class CardStateOpen : StateBase
         m_isFinishedFlipping = false;
         m_audioManager.PlaySFX(m_audioManager.m_data.m_cardFlipSfx);
         
-        m_flipDuration = m_card.m_manager.m_cardIconData.m_flipDuration;
-        m_autoCloseDuration = m_card.m_manager.m_cardIconData.m_autoCloseDuration;
+        m_flipDuration = m_card.m_manager.m_cardData.m_flipDuration;
+        m_autoCloseDuration = m_card.m_manager.m_cardData.m_autoCloseDuration;
         m_finishWaitDuration = 1f;
 
         if (m_card.m_compareCard == null)

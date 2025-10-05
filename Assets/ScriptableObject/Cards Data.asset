@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_autoCloseDuration: 0.1
   m_flipDuration: 0.15
+  m_initialWaitDuration: 3
   TimeBonusMultiplier: 1000
   TriesBonusMultiplier: 500
   StreakMultiplier: 10

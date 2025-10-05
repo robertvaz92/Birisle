@@ -16,7 +16,7 @@ public class CardStateClose : StateBase
     {
         m_updater = updater;
         m_card = m_updater.m_card;
-        m_flipDuration = m_card.m_manager.m_cardIconData.m_flipDuration;
+        m_flipDuration = m_card.m_manager.m_cardData.m_flipDuration;
 
         m_audioManager = GameManager.Instance.m_audioManager;
     }

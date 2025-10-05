@@ -5,6 +5,7 @@ using UnityEngine;
 public enum STATE_TYPE
 {
     NONE,
+    INITIAL_REVEIL,
     STALE,
     OPEN,
     CLOSE,

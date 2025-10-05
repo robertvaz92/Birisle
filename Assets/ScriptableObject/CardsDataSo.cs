@@ -9,6 +9,11 @@ public class CardsDataSo : ScriptableObject
     [Header("Card Parameters")]
     public float m_autoCloseDuration = 3f;
     public float m_flipDuration = 0.15f;
+    public float m_initialWaitDuration = 1f;
+    public int m_spacingMultiplier = 50;
+    public int m_paddingMultiplier = 20;
+    public int m_initialCardPoolSize = 50;
+
 
     [Header("Score Values")]
     public int TimeBonusMultiplier = 100;

@@ -13,13 +13,14 @@ public class GameMenu : UIMenuBase
     public TextMeshProUGUI m_totalFlipTries;
 
     public GameOverPanel m_gameOverPanel;
+    public GameObject m_closeButton;
 
     private bool m_isGameOver;
     public override void OnEnter()
     {
         base.OnEnter();
         m_gameOverPanel.gameObject.SetActive(false);
-        m_cardManager.Initialize();
+        m_cardManager.Initialize(this);
         OnScoreUpdate(m_cardManager.m_scoreManager.m_baseScore, 0);
         m_isGameOver = false;
 
@@ -84,5 +85,10 @@ public class GameMenu : UIMenuBase
         {
             GameManager.Instance.ClearSavedGame();
         }
+    }
+
+    public void ShowCloseButton(bool isEnabled)
+    {
+        m_closeButton.SetActive(isEnabled);
     }
 }

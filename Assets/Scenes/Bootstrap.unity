@@ -850,6 +850,7 @@ MonoBehaviour:
   m_mainMenu: {fileID: 1291807046}
   m_gameMenu: {fileID: 291771244}
   m_audioManager: {fileID: 1903918122}
+  m_isLoadingSavedGame: 0
 --- !u!4 &168896840
 Transform:
   m_ObjectHideFlags: 0
@@ -1064,12 +1065,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6df3f6004e45ea049ba2b8f139a5d96d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_cardIconData: {fileID: 11400000, guid: c50cf1fb283cea6418a657b2ed0c9a86, type: 2}
+  m_cardData: {fileID: 11400000, guid: c50cf1fb283cea6418a657b2ed0c9a86, type: 2}
   m_container: {fileID: 192691427}
   m_cardPrefab: {fileID: 179475605}
-  m_spacing: {x: 50, y: 50}
-  m_padding: {x: 20, y: 20}
-  m_initialCardPoolSize: 50
   m_cards: []
 --- !u!1 &207088461
 GameObject:
@@ -1819,6 +1817,7 @@ MonoBehaviour:
   m_remainingPairs: {fileID: 856577836}
   m_totalFlipTries: {fileID: 1805235289}
   m_gameOverPanel: {fileID: 1233570605}
+  m_closeButton: {fileID: 2029672102}
 --- !u!1 &296152024
 GameObject:
   m_ObjectHideFlags: 0

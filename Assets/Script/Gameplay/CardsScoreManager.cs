@@ -50,8 +50,8 @@ public class CardsScoreManager
 
     public void OnCardMatchSuccess(Card c1, Card c2)
     {
-        m_streakCount += m_manager.m_cardIconData.StreakMultiplier;
-        m_baseScore += m_streakCount * m_manager.m_cardIconData.BaseScorePerMatch;
+        m_streakCount += m_manager.m_cardData.StreakMultiplier;
+        m_baseScore += m_streakCount * m_manager.m_cardData.BaseScorePerMatch;
         OnScoreUpdate?.Invoke(m_baseScore, m_streakCount);
     }
 
@@ -65,8 +65,8 @@ public class CardsScoreManager
     {
         m_totalCards = GameManager.Instance.m_rows * GameManager.Instance.m_columns;
 
-        m_attemptBonus = CalculateBonus(m_totalCards, m_manager.m_totalFlipTries, m_manager.m_cardIconData.TriesBonusMultiplier);
-        m_timeBonus = CalculateBonus(m_totalCards, m_manager.m_totalTimeTaken, m_manager.m_cardIconData.TimeBonusMultiplier);
+        m_attemptBonus = CalculateBonus(m_totalCards, m_manager.m_totalFlipTries, m_manager.m_cardData.TriesBonusMultiplier);
+        m_timeBonus = CalculateBonus(m_totalCards, m_manager.m_totalTimeTaken, m_manager.m_cardData.TimeBonusMultiplier);
         m_finalScore = m_baseScore + m_attemptBonus + m_timeBonus;
     }
 

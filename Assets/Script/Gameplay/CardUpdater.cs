@@ -11,6 +11,7 @@ public class CardUpdater
     private StateBase m_stateStale;
     private StateBase m_stateOpen;
     private StateBase m_stateClose;
+    private StateBase m_stateInitialReveil;
 
     private StateBase m_currentState;
 
@@ -26,6 +27,7 @@ public class CardUpdater
         m_stateStale = new CardStateStale(this);
         m_stateOpen = new CardStateOpen(this);
         m_stateClose = new CardStateClose(this);
+        m_stateInitialReveil = new CardStateInitialReveil(this);
     }
 
     public void CustomUpdate()
@@ -74,9 +76,15 @@ public class CardUpdater
             case STATE_TYPE.STALE:
                 retVal = m_stateStale;
                 break;
+
+            case STATE_TYPE.INITIAL_REVEIL:
+                retVal = m_stateInitialReveil;
+                break;
+
             case STATE_TYPE.OPEN:
                 retVal = m_stateOpen;
                 break;
+
             case STATE_TYPE.CLOSE:
                 retVal = m_stateClose;
                 break;

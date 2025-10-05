@@ -13,6 +13,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public Image m_icon;
 
     public int m_id { get; private set; }
+    public int m_index { get; private set; }
     public Sprite m_iconSprite { get; private set; }
     public Sprite m_bgSprite { get; private set; }
 
@@ -23,12 +24,13 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public bool m_isMatched { get; private set; }
 
 
-    public void Initialize(int id, CardGridManager manager)
+    public void Initialize(int id, CardGridManager manager, int index)
     {
         m_manager = manager;
         m_updater = new CardUpdater(this);
         m_id = id;
-        m_bgSprite = m_manager.m_cardIconData.m_bgIcon;
+        m_index = index;
+        m_bgSprite = m_manager.m_cardData.m_bgIcon;
 
         if (m_id == -1)
         {
@@ -36,11 +38,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            m_iconSprite = m_manager.m_cardIconData.m_icons[m_id];
+            m_iconSprite = m_manager.m_cardData.m_icons[m_id];
             m_canvasGroup.alpha = 1;
             m_icon.sprite = m_bgSprite;
-
-            m_updater.ForceSwitchState(STATE_TYPE.CLOSE);
+            m_updater.SwitchState(STATE_TYPE.INITIAL_REVEIL);
         }
 
         m_compareCard = null;
@@ -62,11 +63,6 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public void SetCompareCard(Card c)
     {
         m_compareCard = c;
-    }
-
-    public void SwitchToCloseState()
-    {
-        m_updater.SwitchState(STATE_TYPE.CLOSE);
     }
 
     public void SetMatchedFlag()
