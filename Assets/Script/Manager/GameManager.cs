@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
     public bool m_isSfxEnabled { get; private set; }
     public SavedData m_loadedGame { get; private set; }
 
+    public bool m_isSavedGameExist => m_loadedGame != null;
+    public bool m_isLoadingSavedGame = false;
+
 
     private FileManager m_fileManager;
 
@@ -171,10 +174,5 @@ public class GameManager : MonoBehaviour
     {
         m_loadedGame = null;
         m_fileManager.writeFile(Constants.GameSaveFileName, JsonUtility.ToJson(m_loadedGame));
-    }
-
-    public bool IsSavedGameExist()
-    {
-        return m_loadedGame != null;
     }
 }

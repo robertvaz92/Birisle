@@ -27,7 +27,8 @@ public class MainMenu : UIMenuBase
 
         m_manger.m_audioManager.PlayBGM();
 
-        m_resumeGameButton.SetActive(m_manger.IsSavedGameExist());
+        m_resumeGameButton.SetActive(m_manger.m_isSavedGameExist);
+        GameManager.Instance.m_isLoadingSavedGame = false;
     }
 
 
@@ -94,6 +95,10 @@ public class MainMenu : UIMenuBase
 
     public void OnClickConfirm()
     {
+        GameManager.Instance.m_isLoadingSavedGame = true;
+        GameManager.Instance.m_rows = GameManager.Instance.m_loadedGame.Rows;
+        GameManager.Instance.m_columns = GameManager.Instance.m_loadedGame.Columns;
+        OnClickStartGame();
         //Update the Row/Column in the Game manager and start the game
     }
 }

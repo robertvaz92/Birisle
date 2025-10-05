@@ -36,6 +36,11 @@ public class CardsScoreManager
         m_manager.OnGameOver += OnGameOver;
     }
 
+    public void SetScoreOnLoadSavedGame()
+    {
+        m_baseScore = GameManager.Instance.m_loadedGame.Score;
+    }
+
     public void CleanUp()
     {
         m_manager.OnCardMatchSuccess -= OnCardMatchSuccess;

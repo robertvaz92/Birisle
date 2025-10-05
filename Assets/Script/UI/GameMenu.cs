@@ -20,7 +20,7 @@ public class GameMenu : UIMenuBase
         base.OnEnter();
         m_gameOverPanel.gameObject.SetActive(false);
         m_cardManager.Initialize();
-        OnScoreUpdate(0, 0);
+        OnScoreUpdate(m_cardManager.m_scoreManager.m_baseScore, 0);
         m_isGameOver = false;
 
         m_cardManager.m_scoreManager.OnScoreUpdate -= OnScoreUpdate;

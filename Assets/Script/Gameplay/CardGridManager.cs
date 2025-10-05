@@ -48,9 +48,18 @@ public class CardGridManager : MonoBehaviour
 
         m_rows = GameManager.Instance.m_rows;
         m_columns = GameManager.Instance.m_columns;
-        CreateCardsWithPairs();
-        DisplayCards();
         m_startTime = DateTime.Now;
+
+        if (GameManager.Instance.m_isLoadingSavedGame)
+        {
+            CreateAndLoadCardData();
+            m_scoreManager.SetScoreOnLoadSavedGame();
+        }
+        else
+        {
+            CreateCardsWithPairs();
+        }
+        DisplayCards();
         m_isInitialized = true;
     }
 
@@ -101,6 +110,37 @@ public class CardGridManager : MonoBehaviour
             m_cards[i] = m_cards[j];
             m_cards[j] = temp;
         }
+    }
+
+    public void CreateAndLoadCardData()
+    {
+        m_totalActiveCards = 0;
+        m_cards = new Card[m_rows * m_columns];
+
+        SavedData savedData = GameManager.Instance.m_loadedGame;
+        int id;
+        int finishedMatches = 0;
+        m_totalFlipTries = savedData.AttemptCount;
+
+        for (int i = 0; i < m_cards.Length; i++)
+        {
+            m_cards[i] = GetNewCard();
+            id = -1;
+            if (savedData.CardIds[i].IsActive)
+            {
+                m_totalActiveCards++;
+                id = savedData.CardIds[i].Id;
+            }
+            else if (savedData.CardIds[i].Id != -1)
+            {
+                finishedMatches++;
+            }
+
+            m_cards[i].Initialize(id, this);
+        }
+
+        m_totalMatches = finishedMatches / 2;
+        m_startTime = m_startTime.AddDays(-1); //No Bonus if last saved game is loaded
     }
 
     private void DisplayCards()

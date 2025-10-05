@@ -12,8 +12,11 @@ public class GameResumePanel : MonoBehaviour
     public TextMeshProUGUI m_score;
     public TextMeshProUGUI m_progress;
 
+    private MainMenu m_mainMenu;
+
     public void Initialize(MainMenu mainMenu)
     {
+        m_mainMenu = mainMenu;
         m_content.localScale = Vector3.zero;
         m_content.DOScale(1, 1).SetEase(Ease.OutBounce);
 
@@ -29,6 +32,7 @@ public class GameResumePanel : MonoBehaviour
 
     public void OnClickContinue()
     {
+        m_mainMenu.OnClickConfirm();
         OnClickClose();
     }
 }
